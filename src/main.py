@@ -30,7 +30,7 @@ def task1_fun(shares):
     my_share, my_queue = shares
     
     '''Control Loop Setup'''
-    Kp = 0.01				#0.1 excessive oscillation,  0.005 good performance, 0.002 underdamped
+    Kp = 0.005				#0.1 excessive oscillation,  0.005 good performance, 0.002 underdamped
     cll = clCont(0, Kp)
     
     '''Serial Bus Setup'''
@@ -40,17 +40,20 @@ def task1_fun(shares):
     #enc1.zero()
     
     
-    for i in range(300):
+    #for i in range(300):
         
-        t = utime.ticks_ms() - zeroPoint
-        p = enc1.read()
-        ser.write(f"{t},{p} \r\n")
-        lvl = cll.run(8000, p)
-        moe1.set_duty_cycle(lvl)
+    t = utime.ticks_ms() - zeroPoint
+    p = enc1.read()
+    ser.write(f"{t},{p} \r\n")
+    lvl = cll.run(8000, p)
+    if p >= 8000:
+        raise keyboardInterrupt
+
+    moe1.set_duty_cycle(lvl)
             
             #utime.sleep_ms(10)
-    moe1.set_duty_cycle(0)
-    ser.write("Stahp\r\n")
+    #moe1.set_duty_cycle(0)
+    #ser.write("Stahp\r\n")
     
     counter = 0
     while True:
@@ -113,9 +116,9 @@ if __name__ == "__main__":
     # allocated for state transition tracing, and the application will run out
     # of memory after a while and quit. Therefore, use tracing only for 
     # debugging and set trace to False when it's not needed
-    task1 = cotask.Task(task1_fun, name="Task_1", priority=1, period=100,
+    task1 = cotask.Task(task1_fun, name="Task_1", priority=1, period=10,
                         profile=True, trace=False, shares=(share0, q0))
-    task2 = cotask.Task(task2_fun, name="Task_2", priority=2, period=1500,
+    task2 = cotask.Task(task2_fun, name="Task_2", priority=2, period=150,
                         profile=True, trace=False, shares=(share0, q0))
     cotask.task_list.append(task1)
     cotask.task_list.append(task2)
