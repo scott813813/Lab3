@@ -29,36 +29,27 @@ def task1_fun(shares):
     # Get references to the share and queue which have been passed to this task
     my_share, my_queue = shares
     
-    ''' Motor Setup Below'''
-    pinA10 = pyb.Pin(pyb.Pin.board.PA10, pyb.Pin.OUT_PP)
-    pinB4 = pyb.Pin(pyb.Pin.board.PB4, pyb.Pin.OUT_PP)
-    pinB5 = pyb.Pin(pyb.Pin.board.PB5, pyb.Pin.OUT_PP)
-    tim = 3
-    moe = MotorDriver(pinA10,pinB4,pinB5,tim)
-    
-    ''' Encoder Setup Below'''
-    pinB6 = pyb.Pin(pyb.Pin.board.PB6, pyb.Pin.IN)
-    pinB7 = pyb.Pin(pyb.Pin.board.PB7, pyb.Pin.IN)
-    enc = EncoderReader(pinB6, pinB7, 4)
-    enc.zero()
-    
     '''Control Loop Setup'''
-    Kp = 0.1				#0.1 excessive oscillation,  0.005 good performance, 0.002 underdamped
+    Kp = 0.01				#0.1 excessive oscillation,  0.005 good performance, 0.002 underdamped
     cll = clCont(0, Kp)
     
     '''Serial Bus Setup'''
     ser = pyb.UART(2,115200)
 
-    zeroPoint = utime.ticks_ms()
+    
+    #enc1.zero()
+    
     
     for i in range(300):
+        
         t = utime.ticks_ms() - zeroPoint
-        p = enc.read()
+        p = enc1.read()
         ser.write(f"{t},{p} \r\n")
         lvl = cll.run(8000, p)
-        moe.set_duty_cycle(lvl)
-        utime.sleep_ms(10)
-    moe.set_duty_cycle(0)
+        moe1.set_duty_cycle(lvl)
+            
+            #utime.sleep_ms(10)
+    moe1.set_duty_cycle(0)
     ser.write("Stahp\r\n")
     
     counter = 0
@@ -92,6 +83,24 @@ def task2_fun(shares):
 # tasks run until somebody presses ENTER, at which time the scheduler stops and
 # printouts show diagnostic information about the tasks, share, and queue.
 if __name__ == "__main__":
+    # Motor 1 setup
+    
+    ''' Motor Setup Below'''
+    pinA10 = pyb.Pin(pyb.Pin.board.PA10, pyb.Pin.OUT_PP)
+    pinB4 = pyb.Pin(pyb.Pin.board.PB4, pyb.Pin.OUT_PP)
+    pinB5 = pyb.Pin(pyb.Pin.board.PB5, pyb.Pin.OUT_PP)
+    tim = 3
+    moe1 = MotorDriver(pinA10,pinB4,pinB5,tim)
+    
+    ''' Encoder Setup Below'''
+    pinB6 = pyb.Pin(pyb.Pin.board.PB6, pyb.Pin.IN)
+    pinB7 = pyb.Pin(pyb.Pin.board.PB7, pyb.Pin.IN)
+    enc1 = EncoderReader(pinB6, pinB7, 4)
+    enc1.zero()
+    
+    zeroPoint = utime.ticks_ms()
+
+    
     print("Testing ME405 stuff in cotask.py and task_share.py\r\n"
           "Press Ctrl-C to stop and show diagnostics.")
 
@@ -104,7 +113,7 @@ if __name__ == "__main__":
     # allocated for state transition tracing, and the application will run out
     # of memory after a while and quit. Therefore, use tracing only for 
     # debugging and set trace to False when it's not needed
-    task1 = cotask.Task(task1_fun, name="Task_1", priority=1, period=400,
+    task1 = cotask.Task(task1_fun, name="Task_1", priority=1, period=100,
                         profile=True, trace=False, shares=(share0, q0))
     task2 = cotask.Task(task2_fun, name="Task_2", priority=2, period=1500,
                         profile=True, trace=False, shares=(share0, q0))
@@ -116,9 +125,13 @@ if __name__ == "__main__":
     gc.collect()
 
     # Run the scheduler with the chosen scheduling algorithm. Quit if ^C pressed
+    i = 0
     while True:
         try:
+            print(enc1.read())
+            print(i)
             cotask.task_list.pri_sched()
+            i += 1
         except KeyboardInterrupt:
             break
 
