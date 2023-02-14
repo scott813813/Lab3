@@ -30,33 +30,21 @@ def task1_fun(shares):
     my_share, my_queue = shares
     
     '''Control Loop Setup'''
-    Kp = 0.005				#0.1 excessive oscillation,  0.005 good performance, 0.002 underdamped
+    Kp = 0.06				#0.1 excessive oscillation,  0.005 good performance, 0.002 underdamped
     cll = clCont(0, Kp)
     
     '''Serial Bus Setup'''
     ser = pyb.UART(2,115200)
-
-    
-    #enc1.zero()
-    
-    
-    #for i in range(300):
-        
-    t = utime.ticks_ms() - zeroPoint
-    p = enc1.read()
-    ser.write(f"{t},{p} \r\n")
-    lvl = cll.run(8000, p)
-    if p >= 8000:
-        raise keyboardInterrupt
-
-    moe1.set_duty_cycle(lvl)
-            
-            #utime.sleep_ms(10)
-    #moe1.set_duty_cycle(0)
-    #ser.write("Stahp\r\n")
     
     counter = 0
     while True:
+        t = utime.ticks_ms() - zeroPoint
+        p = enc1.read()
+        ser.write(f"Motor 1,{t},{p} \r\n")
+        print(t,',',p)
+        lvl = cll.run(8000, p)
+        moe1.set_duty_cycle(lvl)
+        
         my_share.put(counter)
         my_queue.put(counter)
         counter += 1
@@ -118,24 +106,24 @@ if __name__ == "__main__":
     # debugging and set trace to False when it's not needed
     task1 = cotask.Task(task1_fun, name="Task_1", priority=1, period=10,
                         profile=True, trace=False, shares=(share0, q0))
-    task2 = cotask.Task(task2_fun, name="Task_2", priority=2, period=150,
+    task2 = cotask.Task(task2_fun, name="Task_2", priority=2, period=100,
                         profile=True, trace=False, shares=(share0, q0))
     cotask.task_list.append(task1)
     cotask.task_list.append(task2)
+    
+    ser = pyb.UART(2,115200)
+
 
     # Run the memory garbage collector to ensure memory is as defragmented as
     # possible before the real-time scheduler is started
     gc.collect()
 
     # Run the scheduler with the chosen scheduling algorithm. Quit if ^C pressed
-    i = 0
     while True:
         try:
-            print(enc1.read())
-            print(i)
             cotask.task_list.pri_sched()
-            i += 1
         except KeyboardInterrupt:
+            
             break
 
     # Print a table of task data and a table of shared information data
