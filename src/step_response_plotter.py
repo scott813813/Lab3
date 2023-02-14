@@ -50,10 +50,8 @@ fig, axs = pyplot.subplots(2)
 fig.suptitle('Motor Response')
 
 axs[0].plot(mot_1_x_data, mot_1_y_data)
-axs[0].xlabel(mot_1_x_label)
-axs[0].ylabel(mot_1_y_label)
+axs[0].set(xlabel=mot_1_x_label, ylabel=mot_1_y_label)
 
 axs[1].plot(mot_2_x_data, mot_2_y_data)
-axs[1].xlabel(mot_2_x_label)
-axs[1].ylabel(mot_2_y_label)
+axs[1].set(xlabel=mot_2_x_label, ylabel=mot_2_y_label)
 pyplot.show()
