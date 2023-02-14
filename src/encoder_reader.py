@@ -2,8 +2,8 @@
 @file encoder_reader.py
 This file contains code which computes the reading from the encoder in order to evaluate the speed of the motor
 
-@author Mech12
-@date   30-Jan-2023
+@author mecha12
+@date   13-Feb-2023
 """
 
 import pyb # Micropython library

@@ -5,7 +5,7 @@ proportional gain constant, Kp, and finds the difference between the desired
 motor position and actual position.
 
 @author mecha12
-@date   31-jan
+@date   13-Feb-2023
 """
 
 import array # Allows for the creation of arrays to export over the serial port
