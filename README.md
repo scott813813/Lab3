@@ -63,4 +63,11 @@ we found a period of 60 ms to be the point at which the system was running too
 slow to function properly. The results of this test are provided in
 **Figure 1**. <br>
 ![My Image](docs/Too_Much_Time.png) <br>
-**Figure 1**
+**Figure 1**: Long period response of flywheel to a 1 revolution and 2 revolution
+input position, respectively.
+
+Based on these trials, we recommend a maximum period of 50 ms for good data plotting
+as can be seen in **Figure 2**. <br>
+![My Image](docs/Goldilocks_Babeee.png) <br>
+**Figure 2**: General response of the flywheel systems to a 1 revolution and 2
+revolution input position, respectively.
