@@ -103,7 +103,7 @@ if __name__ == "__main__":
     enc2 = EncoderReader(pinC6, pinC7, 8)
     enc2.zero()
     
-    zeroPoint = utime.ticks_ms()
+    zeroPoint = utime.ticks_ms() # Set inital time of the program
 
     # Create a share and a queue to test function and diagnostic printouts
     share0 = task_share.Share('h', thread_protect=False, name="Share 0")
@@ -121,7 +121,7 @@ if __name__ == "__main__":
     cotask.task_list.append(task1)
     cotask.task_list.append(task2)
     
-    ser = pyb.UART(2,115200)
+    ser = pyb.UART(2,115200) # Set the serial port to write to
 
     # Run the memory garbage collector to ensure memory is as defragmented as
     # possible before the real-time scheduler is started
