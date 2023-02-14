@@ -25,7 +25,7 @@ class clCont:
         self.Kp = initKp
         
     def run(self, setpoint, actual):
-         """!
+        """!
         Sets the PWM of the motor in order to position the motor
         @param setpoint The target position of the motor
         @param actual The current position of the motor
@@ -40,14 +40,14 @@ class clCont:
         return PWM
 
     def set_setpoint(self, newSetpoint):
-         """!
+        """!
         Sets a new target position
         @param newSetpoint The new target position of the motor
         """
         self.setpoint = newSetpoint
 
     def set_Kp(self, newKp):
-         """!
+        """!
         Sets a new proportional gain constant
         @param newKp The new proportional gain constant
         """
